@@ -1,0 +1,14 @@
+server:
+  port: 8081
+keycloak:
+  realm: Spotimatch
+  auth-server-url: http://auth.spotimatch.tk/auth
+  ssl-required: none
+  resource: spotimatch-api
+#  credentials.secret: 0d7dc4dd-61af-445d-a503-74fb6674313e
+#  use-resource-role-mappings: true
+  enabled: true
+  security-constraints[0]:
+    authRoles[0]: user
+    securityCollections[0]:
+      patterns[0]: /test/*
