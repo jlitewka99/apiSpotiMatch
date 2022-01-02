@@ -3,12 +3,20 @@ server:
 keycloak:
   realm: Spotimatch
   auth-server-url: http://auth.spotimatch.tk/auth
-  ssl-required: none
   resource: spotimatch-api
-#  credentials.secret: 0d7dc4dd-61af-445d-a503-74fb6674313e
-#  use-resource-role-mappings: true
+  public-client: true
+  ssl-required: external
+  bearer-only: true
+  use-resource-role-mappings: true
+  #  credentials.secret: 0d7dc4dd-61af-445d-a503-74fb6674313e
+  #  use-resource-role-mappings: true
   enabled: true
-  security-constraints[0]:
-    authRoles[0]: user
-    securityCollections[0]:
-      patterns[0]: /test/*
+  securityConstraints:
+    - authRoles: [user, admin, user-api]
+      securityCollections:
+        - name: API Private Data
+          patterns: ['/test/*']
+    - authRoles: [admin]
+      securityCollections:
+        - name: API
+          patterns: ['/todos/*']
