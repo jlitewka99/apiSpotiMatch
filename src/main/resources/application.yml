@@ -5,18 +5,9 @@ keycloak:
   auth-server-url: http://auth.spotimatch.tk/auth
   resource: spotimatch-api
   public-client: true
-  ssl-required: external
-  bearer-only: true
   use-resource-role-mappings: true
-  #  credentials.secret: 0d7dc4dd-61af-445d-a503-74fb6674313e
-  #  use-resource-role-mappings: true
-  enabled: true
-  securityConstraints:
-    - authRoles: [user, admin, user-api]
-      securityCollections:
-        - name: API Private Data
-          patterns: ['/test/*']
-    - authRoles: [admin]
-      securityCollections:
-        - name: API
-          patterns: ['/todos/*']
+  cors: true
+  cors-max-age: 0
+  principal-attribute: preferred_username
+  cors-allowed-methods: POST, PUT, DELETE, GET
+  cors-allowed-headers: X-Requested-With, Content-Type, Authorization, Origin, Accept, Access-Control-Request-Method, Access-Control-Request-Headers
