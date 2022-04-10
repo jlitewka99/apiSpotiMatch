@@ -9,8 +9,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>tk.spotimatch</groupId>
-	<artifactId>api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>spotimatch-api</artifactId>
+	<version>0.1</version>
 	<name>spotimatch-api</name>
 	<description>spotimatch-api</description>
 	<properties>
