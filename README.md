@@ -1,6 +1,5 @@
 # Spotimatch-API
 
-
 ## Authenticating
 
 `POST /auth`  
