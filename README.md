@@ -12,4 +12,4 @@ Payload:
 ```
 
 Authentication is done by Bearer Token.  
-In order to access any endpoint, you need to pass valid token inside request
+In order to access any endpoint, you need to pass valid token inside request.
