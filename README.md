@@ -5,7 +5,7 @@
 
 `POST /register`
 
-Payload:
+Example payload:
 ```json
 {
   "email": "test@gmail.com",
@@ -13,7 +13,7 @@ Payload:
 }
 ```
 
-Response:
+Example response:
 ```json
 {
     "id": 1,
@@ -26,7 +26,7 @@ Response:
 
 `POST /auth`
 
-Payload:  
+Example payload:
 ```json
 {
     "email": "test@gmail.com",
@@ -34,7 +34,7 @@ Payload:
 }
 ```
 
-Reponse:
+Example response:
 ```json
 {
     "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaDQiLCJleHAiOjE2NDk3MTk2NTIsImlhdCI6MTY0OTcxNjA1Mn0.SOBGleBZnZ-nBRMRtAX703CYZzt1OP-vbZItOs9lrVo"
