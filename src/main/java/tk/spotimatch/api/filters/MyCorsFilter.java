@@ -1,4 +1,4 @@
-package tk.spotimatch.api.configuration;
+package tk.spotimatch.api.filters;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
