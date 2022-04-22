@@ -1,4 +1,4 @@
-package tk.spotimatch.api.model;
+package tk.spotimatch.api.model.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
