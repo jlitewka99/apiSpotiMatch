@@ -43,3 +43,40 @@ Example response:
 
 Authentication is done by Bearer Token.  
 In order to access any endpoint, you need to pass valid token inside request.
+
+## Info about user
+
+`GET /me`
+
+Payload:
+```json
+{
+    "id": 1,
+    "email": "sh4",
+    "password": "test",
+    "name": "test123",
+    "age": 123,
+    "bio": "testBio",
+    "picture": null
+}
+```
+
+Prints all information about current logged user
+
+## Updating user
+
+`PUT /me`
+
+Payload:
+```json
+{
+    "name": "new name",
+    "age": "26",
+    "bio": "test"
+}
+```
+
+You can update all info about user except: 
+- ID
+- Email
+- Password
