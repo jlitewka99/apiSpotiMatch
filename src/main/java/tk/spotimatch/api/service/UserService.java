@@ -24,6 +24,10 @@ public class UserService {
         return userRepository.findById(Long.parseLong(id));
     }
 
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
     public Optional<User> findByEmail(String email) {
         return userRepository
                 .findByEmailAllIgnoreCase(email)

@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.RestController;
 import tk.spotimatch.api.model.user.UserDTO;
 import tk.spotimatch.api.service.UserService;
 
-
 @RestController
 public class UserController {
 
     @Autowired
     UserService userService;
 
-    @GetMapping("/users/{email}")
-    public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
-        return ResponseEntity.of(userService.findByEmail(email));
+    @GetMapping("/users/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        return ResponseEntity.of(userService.findById(id));
     }
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
-        return getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return ResponseEntity.of(userService.findByEmail(
+                SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
     @PutMapping("/me")

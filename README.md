@@ -48,7 +48,7 @@ In order to access any endpoint, you need to pass valid token inside request.
 
 `GET /me`
 
-Payload:
+Response:
 ```json
 {
     "id": 1,
@@ -80,3 +80,16 @@ You can update all info about user except:
 - ID
 - Email
 - Password
+
+
+## Fetching user
+
+`GET /user/{id}`
+
+Response:
+```json
+{
+    "id": 1,
+    "email": "test@gmail.com"
+}
+```
