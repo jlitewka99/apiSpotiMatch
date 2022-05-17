@@ -1,5 +1,6 @@
 package tk.spotimatch.api.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import tk.spotimatch.api.service.ChatService;
 import tk.spotimatch.api.service.UserService;
 
 @Controller
+@Slf4j
 public class ChatController {
 
     @Autowired
@@ -24,28 +26,26 @@ public class ChatController {
     @Autowired
     ChatService chatService;
 
-    private final static Logger logger = LogManager.getLogger();
-
     @MessageMapping("/chat")
     public void processMessage(@Payload ChatMessage message) {
-        logger.debug("test");
-        final var sender = userService.findById(message.getSenderId()).orElse(null);
-        if (sender == null) {
-            return;
-        }
-
-        final var recipient = userService.findById(message.getRecipientId()).orElse(null);
-        if (recipient == null) {
-            return;
-        }
-
-        if (message.getContent() == null || message.getContent().isBlank()) {
-            return;
-        }
+        log.info("test");
+//        final var sender = userService.findById(message.getSenderId()).orElse(null);
+//        if (sender == null) {
+//            return;
+//        }
+//
+//        final var recipient = userService.findById(message.getRecipientId()).orElse(null);
+//        if (recipient == null) {
+//            return;
+//        }
+//
+//        if (message.getContent() == null || message.getContent().isBlank()) {
+//            return;
+//        }
 
         chatService.create(message);
 
-        simpMessagingTemplate.convertAndSendToUser(message.getRecipientId(), "/queue/messages", new ChatNotification(sender.getId(), sender.getName(), message.getContent()));
+        simpMessagingTemplate.convertAndSendToUser(message.getRecipientId(), "/queue/messages", new ChatNotification(Long.valueOf(message.getSenderId()), "xyz", message.getContent()));
     }
 
 }
