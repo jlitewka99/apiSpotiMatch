@@ -36,12 +36,12 @@ public class UserService {
     }
 
     public User create(User user) {
-        return userRepository
-                .save(user);
+        return userRepository.save(user);
     }
 
     public Optional<User> update(String userId, UserDTO userDTO) {
-        var userToUpdate = findByEmail(userId).orElseThrow(() -> new UsernameNotFoundException(userDTO.getEmail()));
+        var userToUpdate = findByEmail(userId).orElseThrow(
+                () -> new UsernameNotFoundException(userDTO.getEmail()));
         userToUpdate.merge(userDTO);
         return Optional.of(userRepository.save(userToUpdate));
     }
