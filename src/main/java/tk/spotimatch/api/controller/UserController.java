@@ -9,13 +9,23 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import tk.spotimatch.api.model.user.UserDTO;
+import tk.spotimatch.api.service.ChatService;
+import tk.spotimatch.api.service.PairService;
 import tk.spotimatch.api.service.UserService;
+
+import java.util.ArrayList;
 
 @RestController
 public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    PairService pairService;
+
+    @Autowired
+    ChatService chatService;
 
     @GetMapping("/users/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
@@ -30,7 +40,26 @@ public class UserController {
 
     @PutMapping("/me")
     public ResponseEntity<?> updateCurrentUser(@RequestBody UserDTO userDTO) {
-        var currentUserId = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.of(userService.update(currentUserId, userDTO));
+        final var currentUserName = SecurityContextHolder.getContext().getAuthentication()
+                .getName();
+        return ResponseEntity.of(userService.update(currentUserName, userDTO));
     }
+
+    @GetMapping("/me/pairs")
+    public ResponseEntity<?> listPairsForUserId() {
+        final var currentUserName = SecurityContextHolder.getContext().getAuthentication()
+                .getName();
+        return ResponseEntity.ok(pairService.pairsForUser(currentUserName));
+    }
+
+    @GetMapping("/me/messages/{userId}")
+    public ResponseEntity<?> listMessagesWithUserId(@PathVariable Long userId) {
+        final var currentUserName = SecurityContextHolder.getContext().getAuthentication()
+                .getName();
+
+        return ResponseEntity.ok(userService.findByEmail(currentUserName)
+                .map(leftUser -> chatService.getMessagesForPair(leftUser.getId(), userId))
+                .orElseGet(ArrayList::new));
+    }
+
 }

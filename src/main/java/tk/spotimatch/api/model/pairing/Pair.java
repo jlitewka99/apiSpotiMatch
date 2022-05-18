@@ -1,12 +1,10 @@
-package tk.spotimatch.api.model.chat;
+package tk.spotimatch.api.model.pairing;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,24 +13,18 @@ import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "chat_messages")
+@Table(name = "pair")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
-public class ChatMessage {
-
+public class Pair {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long senderId;
+    private Long leftUserId;
 
-    private Long recipientId;
-
-    private Long pairId;
-
-    private String content;
+    private Long rightUserId;
 
     @CreationTimestamp
     private Instant timestamp;
