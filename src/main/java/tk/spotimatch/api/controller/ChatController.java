@@ -45,10 +45,12 @@ public class ChatController {
 
     @MessageMapping("/chat")
     public void processMessage(@Payload Message<?> messageStomp) throws IOException {
-        log.info("test");
+        log.info("inside processMessage");
 
         StompHeaderAccessor accessor =
                 MessageHeaderAccessor.getAccessor(messageStomp, StompHeaderAccessor.class);
+
+        log.info(accessor.getNativeHeader("Authorization").toString());
 
         assert accessor != null;
 
