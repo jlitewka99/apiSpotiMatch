@@ -37,7 +37,7 @@ public class WebSocketAuthenticationConfig implements WebSocketMessageBrokerConf
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
                 StompHeaderAccessor accessor =
                         MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+                if (StompCommand.CONNECT.equals(accessor.getCommand()) || StompCommand.SEND.equals(accessor.getCommand())) {
                     List<String> authorization = accessor.getNativeHeader("Authorization");
                     log.debug("X-Authorization: {}", authorization);
                     log.info("testing: {}", accessor);
