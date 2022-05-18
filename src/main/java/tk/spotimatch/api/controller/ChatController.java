@@ -10,8 +10,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import tk.spotimatch.api.filters.JwtRequestFilter;
 import tk.spotimatch.api.model.chat.ChatMessage;
 import tk.spotimatch.api.model.chat.ChatNotification;
 import tk.spotimatch.api.model.pairing.Pair;
@@ -22,6 +24,7 @@ import tk.spotimatch.api.service.UserService;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 @Controller
@@ -43,6 +46,9 @@ public class ChatController {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
+
     @MessageMapping("/chat")
     public void processMessage(@Payload Message<?> messageStomp) throws IOException {
         log.info("inside processMessage");
@@ -54,15 +60,24 @@ public class ChatController {
 
         assert accessor != null;
 
-        final var user = (UserDetails) ((UsernamePasswordAuthenticationToken) Objects.requireNonNull(
-                accessor.getHeader("simpUser"))).getPrincipal();
+        List<String> authorization = accessor.getNativeHeader("Authorization");
+
+        if (authorization == null || authorization.isEmpty()) {
+            return;
+        }
+
+        jwtRequestFilter.logUserIfNotLogged(
+                jwtRequestFilter.fetchJwt(authorization.get(0)),
+                (userDetails -> new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities())));
+
+        final var user = (UserDetails) SecurityContextHolder.getContext().getAuthentication();
 
         final var message = objectMapper.readValue(
                 (byte[]) messageStomp.getPayload(), ChatMessage.class);
 
         userService.findByEmail(user.getUsername())
                 .ifPresent(u -> doProcessMessage(message, u));
-
     }
 
     private void doProcessMessage(ChatMessage message, User sender) {
