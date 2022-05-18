@@ -71,13 +71,14 @@ public class ChatController {
                 (userDetails -> new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities())));
 
-        final var user = (UserDetails) SecurityContextHolder.getContext().getAuthentication();
+        final var user = (UserDetails) (SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
 
         final var message = objectMapper.readValue(
                 (byte[]) messageStomp.getPayload(), ChatMessage.class);
 
         userService.findByEmail(user.getUsername())
                 .ifPresent(u -> doProcessMessage(message, u));
+
     }
 
     private void doProcessMessage(ChatMessage message, User sender) {
