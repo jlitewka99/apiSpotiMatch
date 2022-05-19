@@ -10,7 +10,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import tk.spotimatch.api.filters.JwtRequestFilter;
@@ -25,7 +24,6 @@ import tk.spotimatch.api.service.UserService;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 @Slf4j
@@ -66,12 +64,13 @@ public class ChatController {
             return;
         }
 
-        jwtRequestFilter.logUserIfNotLogged(
+        final var user = (UserDetails)  jwtRequestFilter.logUserIfNotLogged(
                 jwtRequestFilter.fetchJwt(authorization.get(0)),
                 (userDetails -> new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities())));
+                        userDetails, null, userDetails.getAuthorities())))
+                .getPrincipal();
 
-        final var user = (UserDetails) (SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
+//        final var user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         final var message = objectMapper.readValue(
                 (byte[]) messageStomp.getPayload(), ChatMessage.class);

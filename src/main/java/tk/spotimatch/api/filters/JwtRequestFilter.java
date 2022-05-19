@@ -1,15 +1,18 @@
 package tk.spotimatch.api.filters;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import tk.spotimatch.api.service.MyUserDetailService;
 import tk.spotimatch.api.util.JwtUtil;
 
+import javax.naming.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Component
+@Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -63,25 +67,32 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         return SecurityContextHolder.getContext().getAuthentication() != null;
     }
 
-    public void logUserIfNotLogged(
+    public UsernamePasswordAuthenticationToken logUserIfNotLogged(
             String jwt,
             Function<UserDetails, UsernamePasswordAuthenticationToken> userDetailsConsumer) {
         if (jwt == null) {
-            return;
+            throw new UsernameNotFoundException("jwt");
         }
         var username = jwtUtil.extractUsername(jwt);
 
         if (username == null || isUserLogged()) {
-            return;
+            throw new UsernameNotFoundException("username");
         }
 
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-        if (jwtUtil.validateToken(jwt, userDetails)) {
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = userDetailsConsumer.apply(userDetails);
-            SecurityContextHolder.getContext()
-                    .setAuthentication(usernamePasswordAuthenticationToken);
+
+        if (!jwtUtil.validateToken(jwt, userDetails)) {
+            throw new UsernameNotFoundException("jwt invalid");
         }
+
+        log.info("logging as " + userDetails);
+
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = userDetailsConsumer.apply(userDetails);
+        SecurityContextHolder.getContext()
+                .setAuthentication(usernamePasswordAuthenticationToken);
+
+        return usernamePasswordAuthenticationToken;
     }
 
 }
