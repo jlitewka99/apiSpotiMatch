@@ -1,28 +1,26 @@
 package tk.spotimatch.api.filters;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import tk.spotimatch.api.service.MyUserDetailService;
 import tk.spotimatch.api.util.JwtUtil;
 
-import javax.naming.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Component
-@Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -67,32 +65,39 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         return SecurityContextHolder.getContext().getAuthentication() != null;
     }
 
-    public UsernamePasswordAuthenticationToken logUserIfNotLogged(
+    public void logUserIfNotLogged(
             String jwt,
             Function<UserDetails, UsernamePasswordAuthenticationToken> userDetailsConsumer) {
         if (jwt == null) {
-            return null;
+            return;
         }
         var username = jwtUtil.extractUsername(jwt);
 
         if (username == null || isUserLogged()) {
-            return null;
+            return;
         }
 
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
+        if (jwtUtil.validateToken(jwt, userDetails)) {
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = userDetailsConsumer.apply(userDetails);
+            SecurityContextHolder.getContext()
+                    .setAuthentication(usernamePasswordAuthenticationToken);
+        }
+    }
 
-        if (!jwtUtil.validateToken(jwt, userDetails)) {
-            throw new UsernameNotFoundException("jwt invalid");
+    public Optional<UserDetails> getUserDetailsFromJwt(String jwt) {
+        if (jwt == null) {
+            return Optional.empty();
         }
 
-        log.info("logging as " + userDetails);
+        var username = jwtUtil.extractUsername(jwt);
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = userDetailsConsumer.apply(userDetails);
-        SecurityContextHolder.getContext()
-                .setAuthentication(usernamePasswordAuthenticationToken);
+        if (username == null) {
+            return Optional.empty();
+        }
 
-        return usernamePasswordAuthenticationToken;
+        return Optional.ofNullable(this.userDetailsService.loadUserByUsername(username));
     }
 
 }

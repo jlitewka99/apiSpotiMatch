@@ -22,6 +22,7 @@ import tk.spotimatch.api.service.PairService;
 import tk.spotimatch.api.service.UserService;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.List;
 
@@ -64,11 +65,12 @@ public class ChatController {
             return;
         }
 
-        final var user = (UserDetails)  jwtRequestFilter.logUserIfNotLogged(
-                jwtRequestFilter.fetchJwt(authorization.get(0)),
-                (userDetails -> new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities())))
-                .getPrincipal();
+        final var user = jwtRequestFilter.getUserDetailsFromJwt(jwtRequestFilter.fetchJwt(authorization.get(0))).orElse(null);
+
+        if (user == null) {
+            log.info(MessageFormat.format("User for jwt: {0} not found", authorization.get(0)));
+            return;
+        }
 
 //        final var user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
