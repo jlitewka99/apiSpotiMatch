@@ -71,12 +71,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             String jwt,
             Function<UserDetails, UsernamePasswordAuthenticationToken> userDetailsConsumer) {
         if (jwt == null) {
-            throw new UsernameNotFoundException("jwt");
+            return null;
         }
         var username = jwtUtil.extractUsername(jwt);
 
         if (username == null || isUserLogged()) {
-            throw new UsernameNotFoundException("username");
+            return null;
         }
 
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
