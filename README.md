@@ -190,8 +190,7 @@ stompClient.connect(auth, onConnected, onError);
 ### Subscribing to queue
 
 When connected you can subscribe to your queue via `/user/{UserID}/queue/messages`  
-You can obtain UserID via `GET /me` endpoint.  
-You don't need to pass Bearer token once you were verified in Initial connection.
+You can obtain UserID via `GET /me` endpoint.
 
 Example:
 
@@ -205,6 +204,8 @@ stompClient.subscribe(
 ### Sending a message
 
 In order to send a message you need to send it to `/app/chat` endpoint.  
+You need to pass Bearer token authorization every time you send a message.
+
 Example:
 
 ```js
@@ -213,6 +214,6 @@ Example:
         recipientId: 2,
         content: "Example message content"
     };
-    stompClient.send("/app/chat", {}, JSON.stringify(message));
+    stompClient.send("/app/chat", auth, JSON.stringify(message));
 };
 ```

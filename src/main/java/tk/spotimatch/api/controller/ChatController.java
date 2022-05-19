@@ -72,8 +72,6 @@ public class ChatController {
             return;
         }
 
-//        final var user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         final var message = objectMapper.readValue(
                 (byte[]) messageStomp.getPayload(), ChatMessage.class);
 
