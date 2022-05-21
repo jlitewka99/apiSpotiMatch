@@ -22,6 +22,7 @@ public class MyCorsFilter implements Filter {
     private static final String LOCALHOST_URL = "http://localhost:4200";
     private static final String WEBSITE_URL = "https://spotimatch.tk";
     private static final String WEBSITE_URL_WWW = "https://www.spotimatch.tk";
+    private static final String CORS_CHECK = "https://cors-test.codehappy.dev";
 
     @Override
     public final void doFilter(
@@ -39,6 +40,8 @@ public class MyCorsFilter implements Filter {
                 response.setHeader("Access-Control-Allow-Origin", LOCALHOST_URL);
             case WEBSITE_URL:
                 response.setHeader("Access-Control-Allow-Origin", WEBSITE_URL);
+            case CORS_CHECK:
+                response.setHeader("Access-Control-Allow-Origin", CORS_CHECK);
             default:
                 response.setHeader("Access-Control-Allow-Origin", WEBSITE_URL_WWW);
         }
