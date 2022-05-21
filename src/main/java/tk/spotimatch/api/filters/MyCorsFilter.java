@@ -43,7 +43,7 @@ public class MyCorsFilter implements Filter {
                 "Request is received with origin header: %s",
                 requestUrl));
 
-        response.setHeader("Access-Control-Allow-Origin", requestUrl);
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
 //        switch (requestUrl) {
 //            case LOCALHOST_URL:
