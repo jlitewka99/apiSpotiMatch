@@ -43,16 +43,18 @@ public class MyCorsFilter implements Filter {
                 "Request is received with origin header: %s",
                 requestUrl));
 
-        switch (requestUrl) {
-            case LOCALHOST_URL:
-                response.setHeader("Access-Control-Allow-Origin", LOCALHOST_URL);
-            case WEBSITE_URL:
-                response.setHeader("Access-Control-Allow-Origin", WEBSITE_URL);
-            case CORS_CHECK:
-                response.setHeader("Access-Control-Allow-Origin", CORS_CHECK);
-            default:
-                response.setHeader("Access-Control-Allow-Origin", WEBSITE_URL_WWW);
-        }
+        response.setHeader("Access-Control-Allow-Origin", requestUrl);
+
+//        switch (requestUrl) {
+//            case LOCALHOST_URL:
+//                response.setHeader("Access-Control-Allow-Origin", LOCALHOST_URL);
+//            case WEBSITE_URL:
+//                response.setHeader("Access-Control-Allow-Origin", WEBSITE_URL);
+//            case CORS_CHECK:
+//                response.setHeader("Access-Control-Allow-Origin", CORS_CHECK);
+//            default:
+//                response.setHeader("Access-Control-Allow-Origin", WEBSITE_URL_WWW);
+//        }
 
         // without this header jquery.ajax calls returns 401 even after successful login and SSESSIONID being succesfully stored.
         response.setHeader("Access-Control-Allow-Credentials", "true");
