@@ -2,3 +2,7 @@ spring:
   h2:
     console:
       enabled: true
+
+logging:
+  level:
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
