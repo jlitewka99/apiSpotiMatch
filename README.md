@@ -170,6 +170,24 @@ Payload:
 }
 ```
 
+## Find pairs
+
+`GET /pairs/find/`
+
+Response:  
+User object
+
+## Match with user
+
+`GET /users/{userId}?match=true`
+
+Parameters:  
+`match`, values: `true`, `false`
+
+Response:  
+true - if other user also matched with us  
+false - if other user didn't match with us, or didn't respond yet.
+
 ## CHAT WEBSOCKETS
 
 ### Initial connection
