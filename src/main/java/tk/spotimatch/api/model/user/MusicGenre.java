@@ -1,34 +1,29 @@
-package tk.spotimatch.api.model.pairing;
+package tk.spotimatch.api.model.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.Instant;
+import javax.transaction.Transactional;
 
 @Entity
-@Table(name = "pair")
+@Table(name = "music_genre")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Pair {
+@Transactional
+public class MusicGenre {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long leftUserId;
-
-    private Long rightUserId;
-
-    @CreationTimestamp
-    private Instant timestamp;
+    private String genre;
 
 }

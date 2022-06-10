@@ -36,16 +36,18 @@ public class AuthenticationController {
     private UserService userService;
 
     @PostMapping("/auth")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(
+            @RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        authenticationRequest.getEmail(),
-                        authenticationRequest.getPassword()));
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            authenticationRequest.getEmail(),
+                            authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
-        final UserDetails userDetails = userDetailService.loadUserByUsername(authenticationRequest.getEmail());
+        final UserDetails userDetails = userDetailService.loadUserByUsername(
+                authenticationRequest.getEmail());
 
         final String token = jwtUtil.generateToken(userDetails);
 
@@ -54,7 +56,9 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterUser registerUser) {
-        var user = userService.create(User.from(registerUser));
-        return ResponseEntity.ok(UserDTO.from(user));
+        return userService.findByEmail(registerUser.getEmail())
+                .map(u -> ResponseEntity.badRequest().build())
+                .orElseGet(() -> ResponseEntity.ok(
+                        UserDTO.from(userService.create(User.from(registerUser)))));
     }
 }

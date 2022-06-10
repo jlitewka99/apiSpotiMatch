@@ -27,6 +27,10 @@ public class PairService {
         return pairRepository.save(pair);
     }
 
+    public boolean areInPair(User leftUser, User rightUser) {
+        return getPair(leftUser, rightUser).isPresent();
+    }
+
     public Optional<Pair> getPair(Long leftUserId, Long rightUserId) {
         return userService.findById(leftUserId).flatMap(leftUser -> getPair(leftUser, rightUserId));
     }
@@ -51,7 +55,7 @@ public class PairService {
         final var secondResult = pairRepository.findByLeftUserIdAndRightUserId(
                 rightUser.getId(), leftUser.getId());
 
-        return Optional.ofNullable(secondResult.get(0));
+        return secondResult.stream().findFirst();
     }
 
     public List<Pair> pairsForUser(String email) {
