@@ -72,7 +72,19 @@ Payload:
 {
     "name": "new name",
     "age": "26",
-    "bio": "test"
+    "bio": "test",
+    "sex": "MALE",
+    "preferences": {
+        "sex": "FEMALE",
+        "musicGenres": [
+            {
+                "genre": "rock"
+            },
+            {
+                "genre": "hip-hop"
+            }
+        ]
+    }
 }
 ```
 

@@ -26,6 +26,14 @@ public class PairController {
     @Autowired
     PairFinderService pairFinderService;
 
+    @GetMapping("/pairs/find")
+    public ResponseEntity<?> findPair() {
+        return userService.findByEmail(
+                        SecurityContextHolder.getContext().getAuthentication().getName())
+                .map(this::findPair)
+                .orElse(ResponseEntity.badRequest().build());
+    }
+
     @GetMapping("/pairs/{id}")
     public ResponseEntity<?> getPairById(@PathVariable Long id) {
         return ResponseEntity.of(pairService.findById(id));
@@ -34,14 +42,6 @@ public class PairController {
     @PostMapping("/pairs")
     public ResponseEntity<?> createPair(@RequestBody Pair pair) {
         return ResponseEntity.ok(pairService.save(pair));
-    }
-
-    @GetMapping("/pairs/find")
-    public ResponseEntity<?> findPair() {
-        return userService.findByEmail(
-                        SecurityContextHolder.getContext().getAuthentication().getName())
-                .map(this::findPair)
-                .orElse(ResponseEntity.badRequest().build());
     }
 
     public ResponseEntity<?> findPair(User user) {
