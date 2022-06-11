@@ -3,10 +3,12 @@ package tk.spotimatch.api.model.user;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import tk.spotimatch.api.model.auth.RegisterUser;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,6 +25,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 public class User {
 
     @Id
@@ -44,7 +47,7 @@ public class User {
     private String picture;
 
     @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "preference_id")
     private Preference preferences;
 
@@ -81,9 +84,6 @@ public class User {
         }
         if (userDTO.getPicture() != null) {
             this.picture = userDTO.getPicture();
-        }
-        if (userDTO.getPreferences() != null) {
-            this.preferences = userDTO.getPreferences();
         }
     }
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import tk.spotimatch.api.model.pairing.Pair;
 import tk.spotimatch.api.model.user.User;
+import tk.spotimatch.api.model.user.UserDTO;
 import tk.spotimatch.api.service.PairFinderService;
 import tk.spotimatch.api.service.PairService;
 import tk.spotimatch.api.service.UserService;
@@ -45,6 +46,6 @@ public class PairController {
     }
 
     public ResponseEntity<?> findPair(User user) {
-        return ResponseEntity.of(pairFinderService.findPair(user));
+        return ResponseEntity.of(pairFinderService.findPair(user).map(UserDTO::from));
     }
 }

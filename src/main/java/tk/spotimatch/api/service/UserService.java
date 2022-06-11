@@ -16,9 +16,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PreferencesService preferencesService;
-
     public List<User> list() {
         return userRepository.findAll();
     }
@@ -46,8 +43,10 @@ public class UserService {
         final var userToUpdate = findByEmail(userEmail).orElseThrow(
                 () -> new UsernameNotFoundException(userDTO.getEmail()));
         final var preferences = userDTO.getPreferences();
-        if (preferences != null) {
-            userDTO.setPreferences(preferencesService.save(userDTO.getPreferences()));
+        if (userToUpdate.getPreferences() == null) {
+            userToUpdate.setPreferences(preferences);
+        } else if (preferences != null) {
+            userToUpdate.getPreferences().merge(preferences);
         }
         userToUpdate.merge(userDTO);
         return Optional.of(userRepository.save(userToUpdate));

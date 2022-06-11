@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -29,12 +31,24 @@ public class Preference {
 
     private Sex sex;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
-            name="preferences_music_genre_mapping",
-            joinColumns = @JoinColumn(name = "preference_id"),
-            inverseJoinColumns = @JoinColumn(name = "music_genre_id")
+            name = "preferences_music_genre_mapping",
+            joinColumns = @JoinColumn(name = "music_genre_id"),
+            inverseJoinColumns = @JoinColumn(name = "preferences_id")
     )
     private Set<MusicGenre> musicGenres;
 
+    public Preference merge(Preference preference) {
+        if (preference.getSex() != null) {
+            this.sex = preference.getSex();
+        }
+        if (this.musicGenres != null && preference.musicGenres != null) {
+            preference.getMusicGenres().stream().dropWhile(m -> this.musicGenres.stream()
+                            .anyMatch(mu -> Objects.equals(m.getGenre(), mu.getGenre())))
+                    .forEach(m -> this.musicGenres.add(m));
+        }
+
+        return this;
+    }
 }
