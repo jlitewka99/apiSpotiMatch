@@ -28,6 +28,10 @@ public class Pair {
 
     private Long rightUserId;
 
+    private String leftUserName;
+
+    private String rightUserName;
+
     @CreationTimestamp
     private Instant timestamp;
 

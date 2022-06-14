@@ -191,7 +191,7 @@ User object
 
 ## Match with user
 
-`GET /users/{userId}?match=true`
+`POST /users/{userId}?match=true`
 
 Parameters:  
 `match`, values: `true`, `false`

@@ -50,7 +50,9 @@ public class MatchesService {
                         save(m);
                         Pair pair = new Pair();
                         pair.setLeftUserId(firstUser.getId());
+                        pair.setLeftUserName(firstUser.getName());
                         pair.setRightUserId(secondUser.getId());
+                        pair.setRightUserName(secondUser.getName());
                         pairService.save(pair);
                         return true;
                     } else {
